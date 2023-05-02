@@ -101,7 +101,7 @@ I2CDevice devicepda;
 int bus;
 
 ROI roi;
-//sharpnessConf conf;
+// sharpnessConf conf;
 
 int listen = 1;
 int frameCount = 0;
@@ -145,8 +145,7 @@ sharpness_status_get_type(void)
                 {PENDING, "Pending", "pending"},
                 {IN_PROGRESS, "In progress", "in_progress"},
                 {COMPLETED, "Completed", "completed"},
-                {0, NULL, NULL}
-            };
+                {0, NULL, NULL}};
 
         sharpness_status = g_enum_register_static("sharpnessStatus", status);
     }
@@ -167,15 +166,13 @@ debug_level_get_type(void)
                 {NONE, "None", "none"},
                 {MINIMAL, "Minimal", "minimal"},
                 {FULL, "Full", "full"},
-                {0, NULL, NULL}
-            };
+                {0, NULL, NULL}};
 
         debug_level = g_enum_register_static("DebugLevel", status);
     }
 
     return debug_level;
 }
-
 
 /**
  * @brief Prevent the ROI from protuding from the image
@@ -205,8 +202,6 @@ static void checkRoi()
     }
 }
 
-
-
 /* GObject vmethod implementations */
 
 /* initialize the sharpness's class */
@@ -220,7 +215,7 @@ static void gst_sharpness_class_init(GstsharpnessClass *klass)
 
     gobject_class->set_property = gst_sharpness_set_property;
     gobject_class->get_property = gst_sharpness_get_property;
-    gobject_class->finalize     = gst_sharpness_finalize;
+    gobject_class->finalize = gst_sharpness_finalize;
 
     g_object_class_install_property(gobject_class, PROP_LATENCY,
                                     g_param_spec_int("latency", "Latency", "Latency between command and command effect on gstreamer",
@@ -228,7 +223,7 @@ static void gst_sharpness_class_init(GstsharpnessClass *klass)
 
     g_object_class_install_property(gobject_class, PROP_WAIT_AFTER_START,
                                     g_param_spec_int("wait_after_start", "Wait_after_start", "Latency between command and command effect on gstreamer",
-                                                     1, 50, 30, G_PARAM_READWRITE));                                          
+                                                     1, 50, 30, G_PARAM_READWRITE));
 
     g_object_class_install_property(gobject_class, PROP_WORK,
                                     g_param_spec_boolean("work", "Work",
@@ -241,29 +236,27 @@ static void gst_sharpness_class_init(GstsharpnessClass *klass)
                                                          TRUE, G_PARAM_READWRITE));
     g_object_class_install_property(gobject_class, PROP_STEP,
                                     g_param_spec_int("step", "Step", "PDA steps",
-                                                     1, 500, 2, G_PARAM_READWRITE));    
-    
+                                                     1, 500, 2, G_PARAM_READWRITE));
+
     g_object_class_install_property(gobject_class, PROP_FILENAME,
                                     g_param_spec_string("filename", "Filename",
-                                                     "name of the csv file, can also be used to change the path",
-                                                     "result.csv", G_PARAM_READWRITE));
-
+                                                        "name of the csv file, can also be used to change the path",
+                                                        "result.csv", G_PARAM_READWRITE));
 
     gst_element_class_set_details_simple(gstelement_class,
                                          "sharpness",
                                          "FIXME:Generic",
                                          "sharpness of snappy2M module",
                                          "Esisar-PI2022 <<user@hostname.org>>");
-  g_object_class_install_property(gobject_class, PROP_ROI1X,
-                                  g_param_spec_int("roi1x", "Roi1x", "Roi coordinates", 0, 1920, 0, G_PARAM_READWRITE));
-  g_object_class_install_property(gobject_class, PROP_ROI1Y,
-                                  g_param_spec_int("roi1y", "Roi1y", "Roi coordinates", 0, 1080, 0, G_PARAM_READWRITE));
-  g_object_class_install_property(gobject_class, PROP_ROI2X,
-                                  g_param_spec_int("roi2x", "Roi2x", "Roi coordinates", 0, 1920, 1920, G_PARAM_READWRITE));
-  g_object_class_install_property(gobject_class, PROP_ROI2Y,
-                                  g_param_spec_int("roi2y", "Roi2y", "Roi coordinates", 0, 1080, 1080, G_PARAM_READWRITE));
+    g_object_class_install_property(gobject_class, PROP_ROI1X,
+                                    g_param_spec_int("roi1x", "Roi1x", "Roi coordinates", 0, 1920, 0, G_PARAM_READWRITE));
+    g_object_class_install_property(gobject_class, PROP_ROI1Y,
+                                    g_param_spec_int("roi1y", "Roi1y", "Roi coordinates", 0, 1080, 0, G_PARAM_READWRITE));
+    g_object_class_install_property(gobject_class, PROP_ROI2X,
+                                    g_param_spec_int("roi2x", "Roi2x", "Roi coordinates", 0, 1920, 1920, G_PARAM_READWRITE));
+    g_object_class_install_property(gobject_class, PROP_ROI2Y,
+                                    g_param_spec_int("roi2y", "Roi2y", "Roi coordinates", 0, 1080, 1080, G_PARAM_READWRITE));
 
-   
     gst_element_class_add_pad_template(gstelement_class,
                                        gst_static_pad_template_get(&src_factory));
     gst_element_class_add_pad_template(gstelement_class,
@@ -289,20 +282,17 @@ static void gst_sharpness_init(Gstsharpness *sharpness)
 
     sharpness->work = TRUE;
     sharpness->latency = 3;
-    sharpness->wait_after_start=30;
-  sharpness->ROI1x = 0;
-  sharpness->ROI1y = 0;
-  sharpness->ROI2x = 1920;
-  sharpness->ROI2y = 1080;
-  sharpness->step = 2;
-    sharpness->reset=false;
-    sharpness->filename = (char *) malloc(sizeof(char)*200);
-    strncpy(sharpness->filename,"0x01 0xFE",10);
+    sharpness->wait_after_start = 30;
+    sharpness->ROI1x = 0;
+    sharpness->ROI1y = 0;
+    sharpness->ROI2x = 1920;
+    sharpness->ROI2y = 1080;
+    sharpness->step = 2;
+    sharpness->reset = false;
+    sharpness->filename = (char *)malloc(sizeof(char) * 200);
+    strncpy(sharpness->filename, "0x01 0xFE", 10);
 
     i2cInit(&device, &devicepda, &bus);
-	
-
-
 }
 
 static void gst_sharpness_set_property(GObject *object, guint prop_id,
@@ -325,24 +315,24 @@ static void gst_sharpness_set_property(GObject *object, guint prop_id,
     case PROP_RESET:
         sharpness->reset = g_value_get_boolean(value);
         break;
-      case PROP_ROI1X:
-    sharpness->ROI1x = g_value_get_int(value);
-    break;
-  case PROP_ROI1Y:
-    sharpness->ROI1y = g_value_get_int(value);
-    break;
-  case PROP_ROI2X:
-    sharpness->ROI2x = g_value_get_int(value);
-    break;
-  case PROP_ROI2Y:
-    sharpness->ROI2y = g_value_get_int(value);
-    break;
-  case PROP_FILENAME:
-    strncpy(sharpness->filename,g_value_get_string(value),200);
-    break;
-  case PROP_STEP:
-    sharpness->step = g_value_get_int(value);
-    break;
+    case PROP_ROI1X:
+        sharpness->ROI1x = g_value_get_int(value);
+        break;
+    case PROP_ROI1Y:
+        sharpness->ROI1y = g_value_get_int(value);
+        break;
+    case PROP_ROI2X:
+        sharpness->ROI2x = g_value_get_int(value);
+        break;
+    case PROP_ROI2Y:
+        sharpness->ROI2y = g_value_get_int(value);
+        break;
+    case PROP_FILENAME:
+        strncpy(sharpness->filename, g_value_get_string(value), 200);
+        break;
+    case PROP_STEP:
+        sharpness->step = g_value_get_int(value);
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
         break;
@@ -369,22 +359,22 @@ static void gst_sharpness_get_property(GObject *object, guint prop_id,
         g_value_set_boolean(value, sharpness->reset);
         break;
 
-      case PROP_ROI1X:
-    g_value_set_int(value, sharpness->ROI1x);
-    break;
-  case PROP_ROI1Y:
-    g_value_set_int(value, sharpness->ROI1y);
-    break;
-  case PROP_ROI2X:
-    g_value_set_int(value, sharpness->ROI2x);
-    break;
-  case PROP_ROI2Y:
-    g_value_set_int(value, sharpness->ROI2y);
-    break;
-  case PROP_STEP:
-    g_value_set_int(value, sharpness->step);
-    break;
-  case PROP_FILENAME:
+    case PROP_ROI1X:
+        g_value_set_int(value, sharpness->ROI1x);
+        break;
+    case PROP_ROI1Y:
+        g_value_set_int(value, sharpness->ROI1y);
+        break;
+    case PROP_ROI2X:
+        g_value_set_int(value, sharpness->ROI2x);
+        break;
+    case PROP_ROI2Y:
+        g_value_set_int(value, sharpness->ROI2y);
+        break;
+    case PROP_STEP:
+        g_value_set_int(value, sharpness->step);
+        break;
+    case PROP_FILENAME:
         g_value_set_string(value, sharpness->filename);
         break;
     default:
@@ -392,10 +382,6 @@ static void gst_sharpness_get_property(GObject *object, guint prop_id,
         break;
     }
 }
-
-
-
-
 
 /* chain function
  * this function does the actual processing
@@ -405,40 +391,45 @@ static GstFlowReturn gst_sharpness_chain(GstPad *pad, GstObject *parent, GstBuff
 
     Gstsharpness *sharpness = GST_sharpness(parent);
 
-    
-    if(sharpness->work && sharpness->wait_after_start < frame)
+    if(sharpness->reset)
     {
-        roi.x=sharpness->ROI1x;
-        roi.y=sharpness->ROI1y;
-        roi.height=sharpness->ROI2y-sharpness->ROI1y;
-        roi.width=sharpness->ROI2x-sharpness->ROI1x;
-        
-        
-        sharp[frame-sharpness->wait_after_start]=getSharpness(pad, buf, roi);
-	//printf("pda : %d sharp : %ld\n",actual_pda, sharp[frame-sharpness->wait_after_start]);
-        actual_pda+=sharpness->step;
-        if(actual_pda < 800)
+        actual_pda=-90;
+        done=false;
+        sharpness->reset=false;
+    }
+
+    if (sharpness->work && sharpness->wait_after_start < frame)
+    {
+        roi.x = sharpness->ROI1x;
+        roi.y = sharpness->ROI1y;
+        roi.height = sharpness->ROI2y - sharpness->ROI1y;
+        roi.width = sharpness->ROI2x - sharpness->ROI1x;
+
+        // printf("pda : %d sharp : %ld\n",actual_pda, sharp[frame-sharpness->wait_after_start]);
+        if (actual_pda < 800-sharpness->step)
         {
+            sharp[(actual_pda + 90) / sharpness->step - sharpness->wait_after_start] = getSharpness(pad, buf, roi);
+            actual_pda += sharpness->step;
             write_VdacPda(devicepda, bus, actual_pda);
         }
-        else if(!done)
+        else if (!done)
         {
-            done=true;
-            last_frame=frame;
+            done = true;
+            last_frame = frame;
         }
-	//printf("tmp : %d, frame %d\n",sharpness->latency + last_frame, frame);
-        if(done && last_frame + sharpness->latency == frame) // WRITE CSV
+        // printf("tmp : %d, frame %d\n",sharpness->latency + last_frame, frame);
+        if (done && last_frame + sharpness->latency == frame) // WRITE CSV
         {
             FILE *file;
-            file = fopen(sharpness->filename,"w+");
-            fprintf(file,"pda, sharpness\n");
-            for(int i = 0;i < (int)((800 + 90) / sharpness->step) ; i+=sharpness->step)
+            file = fopen(sharpness->filename, "w+");
+            fprintf(file, "pda, sharpness\n");
+            for (int i = 0; i < (int)((800 + 90) / sharpness->step); i += sharpness->step)
             {
-                fprintf(file,"%d, %ld\n",i,sharp[i+sharpness->latency]);
+                fprintf(file, "%d, %ld\n", i, sharp[i + sharpness->latency]);
             }
             fclose(file);
-    printf("FINISHED\n");
-       }
+            printf("FINISHED\n");
+        }
     }
     frame++;
 
