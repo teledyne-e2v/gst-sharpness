@@ -92,7 +92,8 @@ enum
     PROP_ROI2X,
     PROP_ROI2Y,
     PROP_STEP,
-    PROP_FILENAME
+    PROP_FILENAME,
+    PROP_DONE
 
 };
 
@@ -100,7 +101,7 @@ I2CDevice device;
 I2CDevice devicepda;
 int bus;
 
-ROI roi;
+
 // sharpnessConf conf;
 
 int listen = 1;
@@ -232,8 +233,14 @@ static void gst_sharpness_class_init(GstsharpnessClass *klass)
 
     g_object_class_install_property(gobject_class, PROP_RESET,
                                     g_param_spec_boolean("reset", "Reset",
-                                                         "Reset plugin (not implemented yet)",
+                                                         "Reset plugin",
                                                          TRUE, G_PARAM_READWRITE));
+
+    g_object_class_install_property(gobject_class, PROP_DONE,
+                                    g_param_spec_boolean("done", "Done",
+                                                         "Set to true when the alrgorithm has finish",
+                                                         TRUE, G_PARAM_READWRITE));
+
     g_object_class_install_property(gobject_class, PROP_STEP,
                                     g_param_spec_int("step", "Step", "PDA steps",
                                                      1, 500, 2, G_PARAM_READWRITE));
@@ -289,8 +296,9 @@ static void gst_sharpness_init(Gstsharpness *sharpness)
     sharpness->ROI2y = 1080;
     sharpness->step = 2;
     sharpness->reset = false;
+    sharpness->done=false;
     sharpness->filename = (char *)malloc(sizeof(char) * 200);
-    strncpy(sharpness->filename, "0x01 0xFE", 10);
+    strncpy(sharpness->filename, "result.csv", 12);
 
     i2cInit(&device, &devicepda, &bus);
 }
@@ -314,6 +322,9 @@ static void gst_sharpness_set_property(GObject *object, guint prop_id,
 
     case PROP_RESET:
         sharpness->reset = g_value_get_boolean(value);
+        break;
+    case PROP_DONE:
+        sharpness->done = g_value_get_boolean(value);
         break;
     case PROP_ROI1X:
         sharpness->ROI1x = g_value_get_int(value);
@@ -358,7 +369,9 @@ static void gst_sharpness_get_property(GObject *object, guint prop_id,
     case PROP_RESET:
         g_value_set_boolean(value, sharpness->reset);
         break;
-
+    case PROP_DONE:
+        g_value_set_boolean(value, sharpness->done);
+        break;
     case PROP_ROI1X:
         g_value_set_int(value, sharpness->ROI1x);
         break;
@@ -396,22 +409,36 @@ static GstFlowReturn gst_sharpness_chain(GstPad *pad, GstObject *parent, GstBuff
         actual_pda=-90;
         done=false;
         sharpness->reset=false;
+	sharpness->done=false;
+		tmp_frame = 0;
     }
 
     if (sharpness->work && sharpness->wait_after_start < frame)
     {
+
         roi.x = sharpness->ROI1x;
         roi.y = sharpness->ROI1y;
         roi.height = sharpness->ROI2y - sharpness->ROI1y;
         roi.width = sharpness->ROI2x - sharpness->ROI1x;
 
         // printf("pda : %d sharp : %ld\n",actual_pda, sharp[frame-sharpness->wait_after_start]);
-        if (actual_pda < 800-sharpness->step)
+        
+
+	if (actual_pda < 800 || tmp_frame < sharpness->latency)
         {
-            sharp[(actual_pda + 90) / sharpness->step - sharpness->wait_after_start] = getSharpness(pad, buf, roi);
-            actual_pda += sharpness->step;
-            write_VdacPda(devicepda, bus, actual_pda);
-        }
+
+		if(actual_pda >= 800)
+		{
+					sharp[(actual_pda + 90) / sharpness->step + tmp_frame ] = getSharpness(pad, buf, roi);
+			tmp_frame++;
+		}
+		else
+		{
+			sharp[(actual_pda + 90) / sharpness->step] = getSharpness(pad, buf, roi);
+			actual_pda += sharpness->step;
+            		write_VdacPda(devicepda, bus, actual_pda);	
+		}
+	}
         else if (!done)
         {
             done = true;
@@ -423,12 +450,14 @@ static GstFlowReturn gst_sharpness_chain(GstPad *pad, GstObject *parent, GstBuff
             FILE *file;
             file = fopen(sharpness->filename, "w+");
             fprintf(file, "pda, sharpness\n");
-            for (int i = 0; i < (int)((800 + 90) / sharpness->step); i += sharpness->step)
+            for (int i = 0; i < (int)((800 + 90) / sharpness->step); i += 1)
             {
-                fprintf(file, "%d, %ld\n", i, sharp[i + sharpness->latency]);
+                fprintf(file, "%d, %ld\n", i*sharpness->step-90, sharp[i + sharpness->latency]);
             }
             fclose(file);
+		sharpness->done=true;
             printf("FINISHED\n");
+		tmp_frame = 0;
         }
     }
     frame++;

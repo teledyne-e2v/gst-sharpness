@@ -85,6 +85,7 @@ int start=0;
 ROI roi;
 int actual_pda=-90;
 bool done=false;
+int tmp_frame=0;
 int last_frame;
 struct _Gstsharpness
 {
@@ -100,6 +101,7 @@ struct _Gstsharpness
   gint ROI2x;
   gint ROI2y;
   gint step;
+  gboolean done;
   char *filename;
 };
 
