@@ -91,7 +91,7 @@ gst-launch-1.0 v4l2src ! sharpness ! queue ! videoconvert ! queue ! xvimagesink 
 
 # Plugin parameters
  
-- work                : 
+- work: 
     - Set plugin to work                     
     - flags: readable, writable
     -                     Boolean. Default: true
