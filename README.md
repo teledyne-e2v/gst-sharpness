@@ -94,10 +94,11 @@ gst-launch-1.0 v4l2src ! sharpness ! queue ! videoconvert ! queue ! xvimagesink 
 - work: 
     - Set plugin to work                     
     - flags: readable, writable
-    -                     Boolean. Default: true
--  latency             : Latency between command and command effect on gstreamer
-    -                       flags: readable, writable
-    -                      Integer. Range: 1 - 50 Default: 3 
+    - Boolean. Default: true
+-  latency             : 
+    - Latency between command and command effect on gstreamer
+    - flags: readable, writable
+    - Integer. Range: 1 - 50 Default: 3 
 - wait-after-start    : Latency between command and command effect on gstreamer
     -                      flags: readable, writable
     -                      Integer. Range: 1 - 50 Default: 30 
