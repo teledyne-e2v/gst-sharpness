@@ -91,7 +91,7 @@ gst-launch-1.0 v4l2src ! sharpness ! queue ! videoconvert ! queue ! xvimagesink 
 
 # Plugin parameters
  
-- work: 
+- work: (usefull only for applications)
     - Set plugin to work                     
     - flags: readable, writable
     - Boolean. Default: true
@@ -147,7 +147,7 @@ gst-launch-1.0 v4l2src ! sharpness ! queue ! videoconvert ! queue ! xvimagesink 
     - flags: readable, writable
     - Type: String
     - Default: "result.csv"
-- done: 
+- done: (usefull only for applications)
    - Description: Set to true when the alrgorithm has finish
    - flags: readable, writable
    - Type: Boolean
