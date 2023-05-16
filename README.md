@@ -1,11 +1,10 @@
-# gst-freeze
-A Gstreamer plugin to freeze the displayed image. Used in camera_gui application
+# gst-sharpness
 
-# Version 1.0
+# Version 1.0.0
 
 # About
 
-This plugin allows to freeze the video stream according a parameter in the gstreamer pipeline or by a manual user entry
+A Gstreamer plugin to control the PDA of the Optimum 2M module and produce a csv file with all sharpness asociated to PDAs
 
 # Dependencies
 
@@ -15,6 +14,7 @@ The following libraries are required for this plugin.
 - libgstreamer1.0-dev
 - libgstreamer-plugins-base1.0-dev
 - meson
+
 #### Debian based system (Jetson): 
 
 ```
@@ -29,9 +29,7 @@ sudo apt install v4l-utils libv4l-dev libgstreamer1.0-dev libgstreamer-plugins-b
 First you must make sure that your device's clock is correctly setup.
 Otherwise the compilation will fail.
 
-### Using Meson 
-
-In the **gst-freeze** folder do:
+In the **gst-sharpness** folder do:
 
 ```
 meson build
@@ -48,9 +46,7 @@ sudo ninja -C build install
 First you must make sure that your device's clock is correctly setup.
 Otherwise the compilation will fail.
 
-### Using Meson 
-
-In the **gst-freeze** folder do:
+In the **gst-sharpness** folder do:
 
 ```
 meson build
@@ -64,14 +60,14 @@ ninja -C build install
 To test if the plugin has been correctly install, do:
 ```
 export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/
-gst-inspect-1.0 freeze
+gst-inspect-1.0 sharpness
 ```
 
-If the plugin failed to install the following message will be displayed: "No such element or plugin 'freeze'"
+If the plugin failed to install the following message will be displayed: "No such element or plugin 'sharpness'"
 
 # Uninstall
 '''
-sudo rm /usr/local/lib/gstreamer-1.0/libgstfreeze.*
+sudo rm /usr/local/lib/gstreamer-1.0/libgstsharpness.*
 '''
 # Usage
 
@@ -80,20 +76,18 @@ It is then required to tell gstreamer where to find it with the command:
 ```
 export GST_PLUGIN_PATH=/usr/local/lib/gstreamer-1.0/
 ```
-The plugin can be used in any gstreamer pipeline by adding '''freeze''', the name of the plugin.
+The plugin can be used in any gstreamer pipeline by adding '''sharpness''', the name of the plugin.
 
 # Pipeline examples:
 With fake image pipeline:
 ```
-gst-launch-1.0 videotestsrc ! freeze ! videoconvert ! ximagesink
+gst-launch-1.0 videotestsrc ! sharpness ! videoconvert ! ximagesink
 ```
 
 With simple video stream:
 ```
-gst-launch-1.0 v4l2src ! freeze ! queue ! videoconvert ! queue ! xvimagesink sync=false
+gst-launch-1.0 v4l2src ! sharpness ! queue ! videoconvert ! queue ! xvimagesink sync=false
 ```
-
-By default, the plugin listen for user inputs in the terminal. You can freeze and unfreeze the video stream by entering '''f''' in the terminal.
 
 # Plugin parameters
 
