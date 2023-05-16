@@ -95,34 +95,60 @@ gst-launch-1.0 v4l2src ! sharpness ! queue ! videoconvert ! queue ! xvimagesink 
     - Set plugin to work                     
     - flags: readable, writable
     - Boolean. Default: true
--  latency             : 
-    - Latency between command and command effect on gstreamer
+-  latency: 
+    - Description: Latency between command and command effect on gstreamer
     - flags: readable, writable
-    - Integer. Range: 1 - 50 Default: 3 
-- wait-after-start    : Latency between command and command effect on gstreamer
-    -                      flags: readable, writable
-    -                      Integer. Range: 1 - 50 Default: 30 
-- reset               : Reset plugin
-    -                      flags: readable, writable
-    -                      Boolean. Default: false
-- roi1x               : Roi coordinates
-    -                      flags: readable, writable
-    -                      Integer. Range: 0 - 1920 Default: 0 
-- roi1y               : Roi coordinates
-    -                      flags: readable, writable
-    -                      Integer. Range: 0 - 1080 Default: 0 
-- roi2x               : Roi coordinates
-    -                      flags: readable, writable
-    -                      Integer. Range: 0 - 1920 Default: 1920 
-- roi2y               : Roi coordinates
-    -                      flags: readable, writable
-    -                      Integer. Range: 0 - 1080 Default: 1080 
-- step                : PDA steps
-    -                      flags: readable, writable
-    -                      Integer. Range: 1 - 500 Default: 2 
-- filename            : name of the csv file, can also be used to change the path
-    -                      flags: readable, writable
-    -                      String. Default: "result.csv"
-- done                : Set to true when the alrgorithm has finish
-   -                      flags: readable, writable
-   -                      Boolean. Default: false
+    - Type: Integer
+    - Range: 1 - 50 
+    - Default: 3 
+- wait-after-start: 
+    - Description: Latency between command and command effect on gstreamer
+    - flags: readable, writable
+    - Type: Integer. 
+    - Range: 1 - 50 
+    - Default: 30 
+- reset: 
+    - Description: Reset plugin
+    - flags: readable, writable
+    - Type: Boolean 
+    - Default: false
+- roi1x               : Roi coordinates 
+    - Description:
+    - flags: readable, writable
+    - Type: Integer
+    - Range: 0 - 1920 
+    - Default: 0 
+- roi1y: 
+    - Description: Roi coordinates
+    - flags: readable, writable
+    - Type: Integer 
+    - Range: 0 - 1080 
+    - Default: 0 
+- roi2x: 
+    - Description: Roi coordinates
+    - flags: readable, writable
+    - Type: Integer 
+    - Range: 0 - 1080 
+    - Default: 0                  
+- roi2y: 
+    - Description: Roi coordinates
+    - flags: readable, writable
+    - Type: Integer 
+    - Range: 0 - 1080 
+    - Default: 0                  
+- step: 
+    - Description: PDA steps
+    - flags: readable, writable
+    - Type: Integer
+    - Range: 1 - 500 
+    - Default: 2 
+- filename: 
+    - Description: name of the csv file, can also be used to change the path
+    - flags: readable, writable
+    - Type: String
+    - Default: "result.csv"
+- done: 
+   - Description: Set to true when the alrgorithm has finish
+   - flags: readable, writable
+   - Type: Boolean
+   - Default: false
